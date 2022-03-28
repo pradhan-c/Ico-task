@@ -1,10 +1,12 @@
+// SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "../GSN/Context.sol";
-import "../token/ERC20/IERC20.sol";
-import "../math/SafeMath.sol";
-import "../token/ERC20/SafeERC20.sol";
-import "../utils/ReentrancyGuard.sol";
+import "@openzeppelin-solidity/contracts/Context.sol";
+import "@openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "@openzeppelin-solidity/contracts/utils/math/SafeMath.sol";
+import "@openzeppelin-solidity/contracts/token/ERC20/utils/SafeERC20.sol";
+import "@openzeppelin-solidity/contracts/security/ReentrancyGuard.sol";
+import "@openzeppelin-solidity/contracts/access/Ownable.sol";
 
 /**
  * @title Crowdsale
@@ -18,7 +20,7 @@ import "../utils/ReentrancyGuard.sol";
  * the methods to add functionality. Consider using 'super' where appropriate to concatenate
  * behavior.
  */
-contract Crowdsale is Context, ReentrancyGuard {
+contract Crowdsale is Context, ReentrancyGuard, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
@@ -36,6 +38,8 @@ contract Crowdsale is Context, ReentrancyGuard {
 
     // Amount of wei raised
     uint256 private _weiRaised;
+
+    uint256 public _tokenSold;
 
     /**
      * Event for token purchase logging
@@ -63,6 +67,13 @@ contract Crowdsale is Context, ReentrancyGuard {
         _wallet = wallet;
         _token = token;
     }
+    //1 ETH === 10^18 wei
+    //1 PILW = 10^18 PILWbits
+    //Assume 1eth = 400$  for this contract like the docs
+    
+    
+
+
 
     /**
      * @dev fallback function ***DO NOT OVERRIDE***
@@ -70,7 +81,7 @@ contract Crowdsale is Context, ReentrancyGuard {
      * of 2300, which is not enough to call buyTokens. Consider calling
      * buyTokens directly when purchasing tokens from a contract.
      */
-    function () external payable {
+    receive () external payable {
         buyTokens(_msgSender());
     }
 
@@ -102,6 +113,44 @@ contract Crowdsale is Context, ReentrancyGuard {
         return _weiRaised;
     }
 
+    
+
+    
+
+    enum STAGE { PRESALE,SEEDSALE,FINALSALE }
+    STAGE public stage;
+
+    function setSTAGE(uint _stage) public onlyOwner{
+        if(uint(STAGE.PRESALE) == _stage){
+            stage = STAGE.PRESALE;
+            _rate =40000;
+            
+        }
+        else if(uint(STAGE.SEEDSALE) == _stage){
+            stage = STAGE.SEEDSALE;
+            _rate=20000;
+            
+        }
+        else{
+            stage = STAGE.FINALSALE;
+            _rate =400;
+            
+        }
+        
+    }
+
+    function changeDynamically(uint256 _cRate) public onlyOwner{
+        _rate = _cRate;
+    }
+
+    
+
+    
+
+    
+
+
+
     /**
      * @dev low level token purchase ***DO NOT OVERRIDE***
      * This function has a non-reentrancy guard, so it shouldn't be called by
@@ -111,9 +160,20 @@ contract Crowdsale is Context, ReentrancyGuard {
     function buyTokens(address beneficiary) public nonReentrant payable {
         uint256 weiAmount = msg.value;
         _preValidatePurchase(beneficiary, weiAmount);
-
         // calculate token amount to be created
         uint256 tokens = _getTokenAmount(weiAmount);
+
+         if(stage == STAGE.PRESALE) {
+           
+           require(tokens + _tokenSold < 30000000000000000000000000 , "No tokens left to sell in Presale or  ");
+
+         }else if(stage == STAGE.SEEDSALE) {
+           require(tokens + _tokenSold < 50000000000000000000000000 , "No tokens left to sell in Seedsale ");
+         }else {
+             require(tokens + _tokenSold < 100000000000000000000000000 , "No tokens left to sell in FinalSale ");
+         }
+        //Update Token sold
+         _tokenSold = tokens + _tokenSold;
 
         // update state
         _weiRaised = _weiRaised.add(weiAmount);
@@ -136,7 +196,7 @@ contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address performing the token purchase
      * @param weiAmount Value in wei involved in the purchase
      */
-    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
+    function _preValidatePurchase(address beneficiary, uint256 weiAmount) internal view virtual {
         require(beneficiary != address(0), "Crowdsale: beneficiary is the zero address");
         require(weiAmount != 0, "Crowdsale: weiAmount is 0");
         this; // silence state mutability warning without generating bytecode - see https://github.com/ethereum/solidity/issues/2691
@@ -148,7 +208,7 @@ contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address performing the token purchase
      * @param weiAmount Value in wei involved in the purchase
      */
-    function _postValidatePurchase(address beneficiary, uint256 weiAmount) internal view {
+    function _postValidatePurchase(address beneficiary, uint256 weiAmount) internal view virtual {
         // solhint-disable-previous-line no-empty-blocks
     }
 
@@ -158,7 +218,7 @@ contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address performing the token purchase
      * @param tokenAmount Number of tokens to be emitted
      */
-    function _deliverTokens(address beneficiary, uint256 tokenAmount) internal {
+    function _deliverTokens(address beneficiary, uint256 tokenAmount) internal virtual {
         _token.safeTransfer(beneficiary, tokenAmount);
     }
 
@@ -168,7 +228,7 @@ contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address receiving the tokens
      * @param tokenAmount Number of tokens to be purchased
      */
-    function _processPurchase(address beneficiary, uint256 tokenAmount) internal {
+    function _processPurchase(address beneficiary, uint256 tokenAmount) internal virtual {
         _deliverTokens(beneficiary, tokenAmount);
     }
 
@@ -178,7 +238,7 @@ contract Crowdsale is Context, ReentrancyGuard {
      * @param beneficiary Address receiving the tokens
      * @param weiAmount Value in wei involved in the purchase
      */
-    function _updatePurchasingState(address beneficiary, uint256 weiAmount) internal {
+    function _updatePurchasingState(address beneficiary, uint256 weiAmount) internal virtual {
         // solhint-disable-previous-line no-empty-blocks
     }
 
@@ -194,7 +254,7 @@ contract Crowdsale is Context, ReentrancyGuard {
     /**
      * @dev Determines how ETH is stored/forwarded on purchases.
      */
-    function _forwardFunds() internal {
+    function _forwardFunds() internal virtual {
         _wallet.transfer(msg.value);
     }
 }
