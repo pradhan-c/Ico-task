@@ -10,6 +10,9 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
   }
 });
 
+
+const Alchemy_API_Key = "https://eth-rinkeby.alchemyapi.io/v2/7yAEJ_JpivaO-Yq6M_vs5EUL5N7LHhi3"
+const Private_Key = "Your private Key will go here";
 // You need to export an object to set up your config
 // Go to https://hardhat.org/config/ to learn more
 
@@ -18,4 +21,10 @@ task("accounts", "Prints the list of accounts", async (taskArgs, hre) => {
  */
 module.exports = {
   solidity: "0.8.4",
+  networks:{
+    rinkeby: {
+      url : `https://eth-rinkeby.alchemyapi.io/v2/7yAEJ_JpivaO-Yq6M_vs5EUL5N7LHhi3`,
+      accounts : [`0x${Private_Key}`]
+    }
+  }
 };
