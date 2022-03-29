@@ -1,12 +1,12 @@
 // SPDX-License-Identifier: MIT
 pragma solidity ^0.8.0;
 
-import "@openzeppelin-solidity/contracts/Context.sol";
-import "@openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
-import "@openzeppelin-solidity/contracts/utils/math/SafeMath.sol";
-import "@openzeppelin-solidity/contracts/token/ERC20/utils/SafeERC20.sol";
-import "@openzeppelin-solidity/contracts/security/ReentrancyGuard.sol";
-import "@openzeppelin-solidity/contracts/access/Ownable.sol";
+import "openzeppelin-solidity/contracts/utils/Context.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/IERC20.sol";
+import "openzeppelin-solidity/contracts/utils/math/SafeMath.sol";
+import "openzeppelin-solidity/contracts/token/ERC20/utils/SafeERC20.sol";
+import "openzeppelin-solidity/contracts/security/ReentrancyGuard.sol";
+import "openzeppelin-solidity/contracts/access/Ownable.sol";
 
 /**
  * @title Crowdsale
@@ -20,7 +20,7 @@ import "@openzeppelin-solidity/contracts/access/Ownable.sol";
  * the methods to add functionality. Consider using 'super' where appropriate to concatenate
  * behavior.
  */
-contract Crowdsale is Context, ReentrancyGuard, Ownable {
+contract PillowCrowdsale is Context, ReentrancyGuard, Ownable {
     using SafeMath for uint256;
     using SafeERC20 for IERC20;
 
