@@ -21,10 +21,10 @@ const Private_Key = "Your private Key will go here";
  */
 module.exports = {
   solidity: "0.8.4",
-  networks:{
+  /*networks:{
     rinkeby: {
       url : `https://eth-rinkeby.alchemyapi.io/v2/7yAEJ_JpivaO-Yq6M_vs5EUL5N7LHhi3`,
       accounts : [`0x${Private_Key}`]
     }
-  }
+  }*/
 };
