@@ -8,9 +8,9 @@ import "./Crowdsale.sol";
 contract PillowCrowdsale is Crowdsale, Ownable {
     using SafeMath for uint256;
 
-    uint256 totalSupply;
-    uint256 _currentrate;
-    uint256 public _tokenSold;
+    uint256 private totalSupply;
+    uint256 private _currentrate;
+    uint256 private _tokenSold;
     uint256 public _PreSaleTokensLeft;
     uint256 public _SeedSaleTokensLeft;
     uint256 public _FinalSaleTokensLeft;
@@ -33,20 +33,20 @@ contract PillowCrowdsale is Crowdsale, Ownable {
         _FinalSaleTokensLeft = 20000000000000000000000000;
     }
 
-    function CurrentRate() public view returns (uint256) {
+    function CurrentRate() private view returns (uint256) {
         return _currentrate;
     }
 
-    function setSTAGE(uint256 _stage) public {
+    function setSTAGE(uint256 _stage) private {
         if (uint256(STAGE.PRESALE) == _stage) {
             stage = STAGE.PRESALE;
-            _currentrate = 40000;
+            _currentrate = 341000;
         } else if (uint256(STAGE.SEEDSALE) == _stage) {
             stage = STAGE.SEEDSALE;
-            _currentrate = 20000;
+            _currentrate = 170500;
         } else {
             stage = STAGE.FINALSALE;
-            _currentrate = 400;
+            _currentrate = 3410;
         }
     }
 

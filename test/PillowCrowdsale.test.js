@@ -14,17 +14,7 @@ describe("PillowTokenCrowdsale", function () {
       await crowdsale.deployed();
     });
 
-    it("rate should be equal to 40000 ", async function () {
-        const [owner] = await ethers.getSigners();
-        const Token = await ethers.getContractFactory("PillowToken");
-        const token = await Token.deploy();
-        await token.deployed();
-        const Crowdsale = await ethers.getContractFactory("PillowCrowdsale");
-        const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
-        await crowdsale.deployed();
-
-        expect(await crowdsale.CurrentRate()).to.equal(40000);
-      });
+    
 
       it("rate should be equal to 0 at the begininning ", async function () {
         const [owner] = await ethers.getSigners();
@@ -32,7 +22,7 @@ describe("PillowTokenCrowdsale", function () {
         const token = await Token.deploy();
         await token.deployed();
         const Crowdsale = await ethers.getContractFactory("PillowCrowdsale");
-        const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
+        const crowdsale = await Crowdsale.deploy("341000",owner.address,token.address);
         await crowdsale.deployed();
 
         expect(await crowdsale.weiRaised()).to.equal(0);
@@ -44,7 +34,7 @@ describe("PillowTokenCrowdsale", function () {
         const token = await Token.deploy();
         await token.deployed();
         const Crowdsale = await ethers.getContractFactory("PillowCrowdsale");
-        const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
+        const crowdsale = await Crowdsale.deploy("341000",owner.address,token.address);
         await crowdsale.deployed();
 
         expect(await crowdsale.stage()).to.equal(0);
@@ -56,7 +46,7 @@ describe("PillowTokenCrowdsale", function () {
         const token = await Token.deploy();
         await token.deployed();
         const Crowdsale = await ethers.getContractFactory("PillowCrowdsale");
-        const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
+        const crowdsale = await Crowdsale.deploy("341000",owner.address,token.address);
         await crowdsale.deployed();
 
         expect(await crowdsale.Wallet()).to.equal(owner.address);
@@ -68,7 +58,7 @@ describe("PillowTokenCrowdsale", function () {
         const token = await Token.deploy();
         await token.deployed();
         const Crowdsale = await ethers.getContractFactory("PillowCrowdsale");
-        const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
+        const crowdsale = await Crowdsale.deploy("341000",owner.address,token.address);
         await crowdsale.deployed();
        
         await token.connect(owner).transfer(crowdsale.address, "100000000000000000000000000");
@@ -77,7 +67,7 @@ describe("PillowTokenCrowdsale", function () {
           to: crowdsale.address,
           value: ethers.utils.parseEther("1.0"), // Sends exactly 1.0 ether
         });
-        expect(await token.balanceOf(addr1.address)).to.equal("40000000000000000000000");
+        expect(await token.balanceOf(addr1.address)).to.equal("341000000000000000000000");
 
       });
 

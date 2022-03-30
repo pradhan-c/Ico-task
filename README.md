@@ -4,7 +4,7 @@ Initial Value at $0.01 (Pre-sale Quantity: 30 Million)
 2nd Sale Value at $0.02 (Seed Sale Quantity: 50 Million)
 Final Sale for Remaining Tokens should be dynamically allocated.
 
-1ETH = 400$ is assumed as per the docs in openzeppelin crowdsale
+1ETH =$ 3410.00
 
 # Basic Sample Hardhat Project
 
