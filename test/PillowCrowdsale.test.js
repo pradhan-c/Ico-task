@@ -23,7 +23,7 @@ describe("PillowTokenCrowdsale", function () {
         const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
         await crowdsale.deployed();
 
-        expect(await crowdsale.rate()).to.equal(40000);
+        expect(await crowdsale.CurrentRate()).to.equal(40000);
       });
 
       it("rate should be equal to 0 at the begininning ", async function () {
@@ -59,7 +59,7 @@ describe("PillowTokenCrowdsale", function () {
         const crowdsale = await Crowdsale.deploy("40000",owner.address,token.address);
         await crowdsale.deployed();
 
-        expect(await crowdsale.wallet()).to.equal(owner.address);
+        expect(await crowdsale.Wallet()).to.equal(owner.address);
       });
 
       it("should transfer tokens to crowsale address ", async function () {
